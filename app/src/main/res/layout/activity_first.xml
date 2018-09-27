@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="회원가입"
+        android:textSize="@dimen/text_default"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_blue_dark"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:hint="@string/enter_id"
+        android:textColorHint="@android:color/black"
+        android:id="@+id/et1"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColorHint="@android:color/black"
+        android:hint="@string/enter_pw"
+        android:id="@+id/et2"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="가입하기"
+        android:background="@android:color/holo_blue_dark"
+        android:textColorHint="@android:color/black"
+        android:id="@+id/btn1"/>
+
+
+
+</LinearLayout>
