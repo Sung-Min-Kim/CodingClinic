@@ -1,32 +1,58 @@
 package com.example.sungminkim.myapplication;
 
-import android.media.Image;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    FragmentOne frag1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.btn_frag1).setOnClickListener(this);
+        findViewById(R.id.btn_frag2).setOnClickListener(this);
+        findViewById(R.id.btn_frag3).setOnClickListener(this);
 
-        Button btn = (Button)findViewById(R.id.button);
-        final TextView txt = (TextView)findViewById(R.id.textview);
-        final ImageView img = (ImageView)findViewById(R.id.image);
+        Intent intent = getIntent();
+        frag1 = new FragmentOne();
+        passInfo(intent);
+    }
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                txt.setText("치킨도 먹고싶당");
-                img.setImageResource(R.drawable.chicken);
-            }
-        });
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_frag1:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frag_container_, new FragmentOne())
+                        .commit();
+                break;
+            case R.id.btn_frag2:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frag_container_, new FragmentTwo())
+                        .commit();
+                break;
+            case R.id.btn_frag3:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frag_container_, new FragmentThree())
+                        .commit();
+                break;
+        }
+    }
+
+    void passInfo(Intent intent) {
+        String id = intent.getStringExtra("id");
+        String pw = intent.getStringExtra("password");
+
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+        bundle.putString("pw", pw);
+        frag1.setArguments(bundle);
+
     }
 }
