@@ -1,58 +1,96 @@
 package com.example.sungminkim.myapplication;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    FragmentOne frag1;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.sungminkim.myapplication.BaseActivity;
+import com.example.sungminkim.myapplication.R;
+import com.example.sungminkim.myapplication.FeedFragment;
+import com.example.sungminkim.myapplication.NotiFragment;
+import com.example.sungminkim.myapplication.ProfileFragment;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+public class MainActivity extends BaseActivity {
+
+    public static final String NAME_KEY = "NAME_KEY";
+    private String name;
+
+    private Fragment feedFragment;
+    private Fragment notiFragment;
+    private Fragment profileFragment;
+    private Fragment activeFragment;
+    private final FragmentManager fm = getSupportFragmentManager();
+
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.btn_frag1).setOnClickListener(this);
-        findViewById(R.id.btn_frag2).setOnClickListener(this);
-        findViewById(R.id.btn_frag3).setOnClickListener(this);
 
-        Intent intent = getIntent();
-        frag1 = new FragmentOne();
-        passInfo(intent);
+        setArguments();
+        initializeFragments();
+
+        findView();
+        setBottomNavigationView();
+
+        bottomNavigationView.setSelectedItemId(R.id.nav_bottom_feed);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_frag1:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.frag_container_, new FragmentOne())
-                        .commit();
-                break;
-            case R.id.btn_frag2:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.frag_container_, new FragmentTwo())
-                        .commit();
-                break;
-            case R.id.btn_frag3:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.frag_container_, new FragmentThree())
-                        .commit();
-                break;
-        }
+    private void setArguments() {
+        name = getIntent().getStringExtra(NAME_KEY);
     }
 
-    void passInfo(Intent intent) {
-        String id = intent.getStringExtra("id");
-        String pw = intent.getStringExtra("password");
+    private void initializeFragments() {
+        feedFragment = new FeedFragment();
+        notiFragment = new NotiFragment();
+        profileFragment = ProfileFragment.newInstance(name);
 
-        Bundle bundle = new Bundle();
-        bundle.putString("id", id);
-        bundle.putString("pw", pw);
-        frag1.setArguments(bundle);
+        fm.beginTransaction().add(R.id.box_fragment, feedFragment).hide(feedFragment)
+                .add(R.id.box_fragment, notiFragment).hide(notiFragment)
+                .add(R.id.box_fragment, profileFragment).hide(profileFragment)
+                .commit();
+    }
 
+    private void findView() {
+        bottomNavigationView = findViewById(R.id.nav_bottom);
+    }
+
+    private void setBottomNavigationView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_bottom_feed:
+                        setFragment(feedFragment);
+                        return true;
+                    case R.id.nav_bottom_noti:
+                        setFragment(notiFragment);
+                        return true;
+                    case R.id.nav_bottom_profile:
+                        setFragment(profileFragment);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void setFragment(Fragment fragment) {
+        FragmentTransaction transaction = fm.beginTransaction();
+        if (activeFragment != null) transaction.hide(activeFragment);
+        transaction.show(fragment)
+                .commit();
+        activeFragment = fragment;
     }
 }
